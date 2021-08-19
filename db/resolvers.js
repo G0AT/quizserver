@@ -1,5 +1,6 @@
 const Usuario = require('../models/Usuario');
 const Quiz = require('../models/Quiz');
+const Questions = require('../models/Questions');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: 'variables.env' });
@@ -38,16 +39,16 @@ const resolvers = {
         }, 
         obtenerEncuesta: async () => {
             try {
-                const encuesta = await Quiz.find({}).populate('usuario');
+                const encuesta = await Quiz.find({});
                 return encuesta;
             } catch (error) {
                 console.log(error);
             }
         },
-        obtenerEncuestas: async (_, {}) => {
+        obtenerEncuestaId: async (_, {id}) => {
             //Ejecutamos la busqueda en Quiz
             try {
-                const encuesta = await Quiz.find({});
+                const encuesta = await Quiz.findById(id);
                 return encuesta;
             } catch (error) {
                 console.log(error);
@@ -114,12 +115,11 @@ const resolvers = {
             if(!passwordCorrecto) { throw new Error('El usuario o la contraseña son incorrectos'); }
 
             // Crear el token
-            return { token: crearToken(existeUsuario, process.env.SECRETA, '1h' ) }
+            return { token: crearToken(existeUsuario, process.env.SECRETA, '24h' ) }
             
         },
         nuevaEncuesta: async (_, { input }, ctx) => {
 
-            console.log(ctx)
                 const {nombreEncuesta} = input;
 
                 const encuesta = await Quiz.findOne({nombreEncuesta});
@@ -133,6 +133,31 @@ const resolvers = {
             try {
                 // almacenar en la bd
                 const resultado = await nuevaEncuesta.save();
+                return resultado;
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        nuevaPregunta: async (_, { input }, ctx) => {
+
+                const { pregunta, encuesta} = input;
+                const preguntas = await Questions.findOne({pregunta});
+                const encuestas = await Quiz.findById(encuesta);
+                if (preguntas) {
+                    throw new Error('Ya existe una encuesta con ese nombre');
+                }
+                
+                if(!encuestas){
+                    throw new Error("Encuesta inexistente");
+                }
+
+                const nuevaPregunta = new Questions(input);
+                nuevaPregunta.creador = ctx.usuario.id;
+                nuevaPregunta.encuesta = encuestas.id;
+            try {
+                // almacenar en la bd
+                const resultado = await nuevaPregunta.save();
                 return resultado;
 
             } catch (error) {

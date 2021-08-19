@@ -109,14 +109,14 @@ const typeDefs = gql`
         creador:ID!
     }
 
-    input Respuesta {
+    input RespuestaInput {
         respuestas: String!
         encuesta:ID!
         pregunta:ID!
         creador:ID!
     }
 
-    input RespuestaCorrecta {
+    input RespuestaCorrectaInput {
         respuestasCorrectas: String!
         encuesta:ID!
         pregunta:ID!
@@ -132,8 +132,16 @@ const typeDefs = gql`
         obtenerUsuarioId(id: ID!): Usuario
 
         #Encuesta
-        obtenerEncuesta: Encuesta
-        obtenerEncuestas: [Encuesta]
+        obtenerEncuesta: [Encuesta]
+        obtenerEncuestaId(id:ID!): Encuesta
+
+        #Preguntas
+        obtenerPreguntas: [Preguntas]
+        obtenerPreguntasId(id:ID!): Preguntas
+
+        #Respuestas
+        obtenerRespuesta: [Respuesta]
+        obtenerRespuestaId(id:ID!): Respuesta
 
     }
 
@@ -145,6 +153,12 @@ const typeDefs = gql`
 
         #Encuestas
         nuevaEncuesta(input:EncuestaInput):Encuesta
+
+        #Preguntas
+        nuevaPregunta(input:PreguntasInput):Preguntas
+
+        #Respuestas
+        nuevaRespuesta(input:RespuestaInput):Respuesta
     }
 `;
 
