@@ -1,4 +1,5 @@
 const Usuario = require('../models/Usuario');
+const Quiz = require('../models/Quiz');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: 'variables.env' });
@@ -34,6 +35,23 @@ const resolvers = {
             }
 
             return usuario;
+        }, 
+        obtenerEncuesta: async () => {
+            try {
+                const encuesta = await Quiz.find({}).populate('usuario');
+                return encuesta;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        obtenerEncuestas: async (_, {}) => {
+            //Ejecutamos la busqueda en Quiz
+            try {
+                const encuesta = await Quiz.find({});
+                return encuesta;
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
     Mutation: {
@@ -98,6 +116,28 @@ const resolvers = {
             // Crear el token
             return { token: crearToken(existeUsuario, process.env.SECRETA, '1h' ) }
             
+        },
+        nuevaEncuesta: async (_, { input }, ctx) => {
+
+            console.log(ctx)
+                const {nombreEncuesta} = input;
+
+                const encuesta = await Quiz.findOne({nombreEncuesta});
+                if (encuesta) {
+                    throw new Error('Ya existe una encuesta con ese nombre');
+                }
+
+                const nuevaEncuesta = new Quiz(input);
+
+                nuevaEncuesta.creador = ctx.usuario.id;
+            try {
+                // almacenar en la bd
+                const resultado = await nuevaEncuesta.save();
+                return resultado;
+
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 }

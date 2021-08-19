@@ -38,6 +38,40 @@ const typeDefs = gql`
         token: String
     }
 
+    type Encuesta {
+        id:ID
+        nombreEncuesta: String
+        creador: ID
+        creado: String
+    }
+
+    type Preguntas {
+        id:ID
+        pregunta: String
+        encuesta: ID
+        creador: ID
+        creado: String
+    }
+
+    type Respuesta {
+        id:ID
+        respuestas: String
+        encuesta: ID
+        pregunta: ID
+        creador: ID
+        creado: String
+    }
+
+    type RespuestaCorrecta {
+        id:ID
+        respuestasCorrectas: String
+        encuesta: ID
+        pregunta: ID
+        respuesta: ID
+        creador: ID
+        creado: String
+    }
+
     #Inputs para mutations
     input UsuarioInput {
         nombre: String!
@@ -64,17 +98,53 @@ const typeDefs = gql`
         password: String!
     }
 
+    input EncuestaInput {
+        nombreEncuesta: String!
+        creador:ID!
+    }
+
+    input PreguntasInput {
+        pregunta: String
+        encuesta:ID!
+        creador:ID!
+    }
+
+    input Respuesta {
+        respuestas: String!
+        encuesta:ID!
+        pregunta:ID!
+        creador:ID!
+    }
+
+    input RespuestaCorrecta {
+        respuestasCorrectas: String!
+        encuesta:ID!
+        pregunta:ID!
+        respuesta:ID!
+        creador:ID!
+    }
+
     #Querys
     type Query {
+        #usuarios
         obtenerUsuario: Usuario
         obtenerUsuarios: [Usuario]
         obtenerUsuarioId(id: ID!): Usuario
+
+        #Encuesta
+        obtenerEncuesta: Encuesta
+        obtenerEncuestas: [Encuesta]
+
     }
 
     type Mutation {
+        #Usuarios
         nuevoUsuario(input:UsuarioInput):Usuario
         nuevoUsuarioInterno(input: UsuarioInternoInput): Usuario
         autenticarUsuario(input:AutenticarInput): Token
+
+        #Encuestas
+        nuevaEncuesta(input:EncuestaInput):Encuesta
     }
 `;
 
