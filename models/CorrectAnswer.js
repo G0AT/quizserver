@@ -15,10 +15,6 @@ const CorrectAnswerSchema = mongoose.CorrectAnswerSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Questions'
     },
-    respuesta: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Answers'
-    },
     creador: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'Usuario'

@@ -163,6 +163,37 @@ const resolvers = {
             } catch (error) {
                 console.log(error);
             }
+        },
+        nuevaRespuesta: async (_, { input }, ctx) => {
+
+                const { respuestas, encuesta, pregunta } = input;
+                const respuesta = await Answer.findOne({respuestas});
+                const encuestas = await Quiz.findById(encuesta);
+                const pregunta = await Quiz.findById(pregunta);
+                
+                if (encuestas) {
+                    throw new Error('Existe una respuestas similar');
+                }
+                
+                if (pregunta) {
+                    throw new Error('Ya existe una encuesta con ese nombre');
+                }
+                
+                if(!respuesta){
+                    throw new Error("Respuesta inexistente");
+                }
+
+                const nuevaRespuesta = new Answer(input);
+                nuevaRespuesta.creador = ctx.usuario.id;
+                nuevaRespuesta.encuesta = encuestas.id;
+                nuevaRespuesta.pregunta = pregunta.id;
+            try {
+                // almacenar en la bd
+                const resultado = await nuevaRespuesta.save();
+                return resultado;
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 }

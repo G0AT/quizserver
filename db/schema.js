@@ -67,7 +67,6 @@ const typeDefs = gql`
         respuestasCorrectas: String
         encuesta: ID
         pregunta: ID
-        respuesta: ID
         creador: ID
         creado: String
     }
@@ -120,7 +119,6 @@ const typeDefs = gql`
         respuestasCorrectas: String!
         encuesta:ID!
         pregunta:ID!
-        respuesta:ID!
         creador:ID!
     }
 
