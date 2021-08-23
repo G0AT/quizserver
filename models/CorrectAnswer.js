@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CorrectAnswerSchema = mongoose.CorrectAnswerSchema({
+const CorrectAnswerSchema = mongoose.Schema({
     respuestasCorrectas: {
         type:String,
         required:true,

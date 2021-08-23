@@ -1,6 +1,8 @@
 const Usuario = require('../models/Usuario');
 const Quiz = require('../models/Quiz');
 const Questions = require('../models/Questions');
+const Answers = require('../models/Answers');
+const CorrectAnswer = require('../models/CorrectAnswer');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: 'variables.env' });
@@ -165,28 +167,14 @@ const resolvers = {
             }
         },
         nuevaRespuesta: async (_, { input }, ctx) => {
-
-                const { respuestas, encuesta, pregunta } = input;
-                const respuesta = await Answer.findOne({respuestas});
+                const { encuesta, pregunta } = input;
                 const encuestas = await Quiz.findById(encuesta);
-                const pregunta = await Quiz.findById(pregunta);
+                const preguntas = await Questions.findById(pregunta);
                 
-                if (encuestas) {
-                    throw new Error('Existe una respuestas similar');
-                }
-                
-                if (pregunta) {
-                    throw new Error('Ya existe una encuesta con ese nombre');
-                }
-                
-                if(!respuesta){
-                    throw new Error("Respuesta inexistente");
-                }
-
-                const nuevaRespuesta = new Answer(input);
-                nuevaRespuesta.creador = ctx.usuario.id;
+                const nuevaRespuesta = new Answers(input);
                 nuevaRespuesta.encuesta = encuestas.id;
-                nuevaRespuesta.pregunta = pregunta.id;
+                nuevaRespuesta.pregunta = preguntas.id;
+                nuevaRespuesta.creador = ctx.usuario.id;
             try {
                 // almacenar en la bd
                 const resultado = await nuevaRespuesta.save();
@@ -194,6 +182,30 @@ const resolvers = {
             } catch (error) {
                 console.log(error);
             }
+        },
+        nuevaRespuestaCorrecta: async (_, { input }, ctx) => {
+            const { encuesta, pregunta } = input;
+            const encuestas = await Quiz.findById(encuesta);
+            const preguntaId = await Questions.findById(pregunta);
+            const preguntas = await CorrectAnswer.findById(pregunta);
+            
+            if(preguntaId){
+                throw new Error('Ya existe una respuesta correcta registrada')
+            } else {
+                const nuevaRespuestaCorrecta = new CorrectAnswer(input);
+                nuevaRespuestaCorrecta.encuesta = encuestas.id;
+                nuevaRespuestaCorrecta.pregunta = preguntaId.id;
+                nuevaRespuestaCorrecta.creador = ctx.usuario.id;
+                
+                try {
+                    // almacenar en la bd
+                    const resultado = await nuevaRespuestaCorrecta.save();
+                    return resultado;
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        
         }
     }
 }

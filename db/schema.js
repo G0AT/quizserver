@@ -157,6 +157,9 @@ const typeDefs = gql`
 
         #Respuestas
         nuevaRespuesta(input:RespuestaInput):Respuesta
+
+        #RespuestasCorrectas
+        nuevaRespuestaCorrecta(input:RespuestaCorrectaInput):RespuestaCorrecta
     }
 `;
 
