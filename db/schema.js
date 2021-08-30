@@ -77,9 +77,6 @@ const typeDefs = gql`
         apellidos: String!
         numero: Int!
         password: String!
-        area: String!
-        plaza: String!
-        estatus: String!
     }
 
     input UsuarioInternoInput {
